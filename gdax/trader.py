@@ -135,13 +135,16 @@ class Trader(object):
 
     async def _delete(self, path, data=None, decimal_return_fields=None,
                       convert_all=False):
-        json_data = json.dumps(data)
-        headers = self._auth_headers(path, method='DELETE', body=json_data)
+        if data is None:
+            data = ''
+        else:
+            data = json.dumps(data)
+        headers = self._auth_headers(path, method='DELETE', body=data)
         path_url = self.API_URL + path
         with async_timeout.timeout(self.timeout_sec):
             async with self.session.delete(path_url,
                                            headers=headers,
-                                           data=json_data) as response:
+                                           data=data) as response:
                 response.raise_for_status()
                 return await response.json()
 
