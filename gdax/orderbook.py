@@ -25,7 +25,7 @@ class OrderBookError(Exception):
 class OrderBook(WebSocketFeedListener):
     def __init__(self, product_ids='ETH-USD', api_key=None, api_secret=None,
                  passphrase=None, use_heartbeat=False,
-                 trade_log_file_path=None):
+                 trade_log_file_path=None, timeout_sec=10):
 
         super().__init__(product_ids=product_ids,
                          api_key=api_key,
@@ -37,7 +37,8 @@ class OrderBook(WebSocketFeedListener):
         if not isinstance(product_ids, list):
             product_ids = [product_ids]
 
-        self.traders = {product_id: gdax.trader.Trader(product_id=product_id)
+        self.traders = {product_id: gdax.trader.Trader(product_id=product_id,
+                                                       timeout_sec=timeout_sec)
                         for product_id in product_ids}
         self._asks = {product_id: SortedDict() for product_id in product_ids}
         self._bids = {product_id: SortedDict() for product_id in product_ids}
@@ -179,7 +180,7 @@ class OrderBook(WebSocketFeedListener):
             bids = self.get_bids(product_id, price)
             if not bids:
                 return
-            assert bids[0]['id'] == order['maker_order_id']
+            #assert bids[0]['id'] == order['maker_order_id']
             if bids[0]['size'] == size:
                 self.set_bids(product_id, price, bids[1:])
             else:
@@ -189,7 +190,7 @@ class OrderBook(WebSocketFeedListener):
             asks = self.get_asks(product_id, price)
             if not asks:
                 return
-            assert asks[0]['id'] == order['maker_order_id']
+            #assert asks[0]['id'] == order['maker_order_id']
             if asks[0]['size'] == size:
                 self.set_asks(product_id, price, asks[1:])
             else:
