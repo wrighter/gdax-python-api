@@ -79,7 +79,7 @@ class WebSocketFeedListener(ABC):
 
     async def _close_log_file(self):
         if self._trade_file is not None:
-            await self._trade_file.__aexit__(None, None, None)
+            await self._trade_file.close()
 
     async def _send(self, **kwargs):
         await self._ws.send_json(kwargs)
