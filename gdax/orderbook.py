@@ -201,8 +201,7 @@ class OrderBook(WebSocketFeedListener):
         if 'new_size' not in order:
             # market order
             # TODO
-            raise NotImplementedError(
-                'change operation not implemented with missing new_size')
+            return
         else:
             new_size = Decimal(order['new_size'])
 
