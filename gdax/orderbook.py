@@ -80,7 +80,7 @@ class OrderBook(WebSocketFeedListener):
     async def handle_message(self):
         try:
             message = await self._recv()
-        except aiohttp.ServerDisconnectedError as exc:
+        except (TypeError, aiohttp.ServerDisconnectedError) as exc:
             logging.error(
                 f'Error: Exception: f{exc}. Re-initializing websocket.')
             await self.__aexit__(None, None, None)
